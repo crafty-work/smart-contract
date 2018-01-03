@@ -1,0 +1,11 @@
+{
+  "name": "crafty-contracts",
+  "version": "0.0.1",
+  "description": "Crafty contracts [https://crafty.work/]",
+  "repository": "https://bitbucket.org/cfty/smart-contracts",
+  "author": "Ricardo Bessa da Costa <ricardobessa@gmail.com>",
+  "dependencies": {
+    "truffle": "^4.0.1"
+  },
+  "devDependencies": {}
+}
