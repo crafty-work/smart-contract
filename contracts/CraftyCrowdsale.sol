@@ -121,7 +121,7 @@ contract CraftyCrowdsale is Pausable {
      */
     function buyTokens() public saleIsOn whenNotPaused payable {
         require(msg.sender != 0x0);
-        require(msg.value > 0);
+        require(msg.value >= 20 finney);
 
         uint256 weiAmount = msg.value;
         uint256 currentRate = getRate(weiAmount);
