@@ -230,7 +230,7 @@ contract CraftyCrowdsale is Pausable {
      * @dev Check the amount of wei received by beneficiary.
      * @param beneficiary Address of beneficiary.
      */
-    function receivedFrom(address beneficiary) public constant returns (uint256) {
+    function receivedFrom(address beneficiary) public view returns (uint256) {
         return received[beneficiary];
     }
 
@@ -271,7 +271,7 @@ contract CraftyCrowdsale is Pausable {
      * @param amount Amount received.
      * @return An uint256 representing the exchange rate.
      */
-    function getRate(uint256 amount) internal constant returns (uint256) {
+    function getRate(uint256 amount) internal view returns (uint256) {
         if(now < preSaleEnd) {
             require(amount >= 12500 finney);
 
