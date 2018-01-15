@@ -30,7 +30,16 @@ contract CraftyCrowdsale is Pausable {
     uint256 public issuedTokens = 0;
 
     // token cap
-    uint256 public hardCap = 5000000000 * 10**8;
+    uint256 public constant hardCap = 5000000000 * 10**8; // 50%
+
+    // token wallets
+    uint256 constant teamCap = 1450000000 * 10**8; // 14.5%
+    uint256 constant advisorCap = 450000000 * 10**8; // 4.5%
+    uint256 constant bountyCap = 100000000 * 10**8; // 1%
+    uint256 constant fundCap = 3000000000 * 10**8; // 30%
+
+    // Number of days the tokens will be locked
+    uint256 constant lockTime = 180 days;
 
     // wallets
     address public etherWallet;
@@ -171,21 +180,17 @@ contract CraftyCrowdsale is Pausable {
         bountyWallet = _bountyWallet;
         fundWallet = _fundWallet;
 
-        uint256 releaseTime = saleEnd + 180 days;
+        uint256 releaseTime = saleEnd + lockTime;
 
         // Mint locked tokens
-        // 14.5% to team
         teamTokens = new TokenTimelock(token, teamWallet, releaseTime);
-        token.mint(teamTokens, 1450000000 * 10**8);
-        // 4.5% to advisors
+        token.mint(teamTokens, teamCap);
         advisorTokens = new TokenTimelock(token, advisorWallet, releaseTime);
-        token.mint(advisorTokens, 450000000 * 10**8);
+        token.mint(advisorTokens, advisorCap);
 
         // Mint released tokens
-        // 1% to bounty
-        token.mint(bountyWallet, 100000000 * 10**8);
-        // 30% to fund
-        token.mint(fundWallet, 3000000000 * 10**8);
+        token.mint(bountyWallet, bountyCap);
+        token.mint(fundWallet, fundCap);
 
         currentState = State.SALE;
     }
