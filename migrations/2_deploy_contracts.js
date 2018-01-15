@@ -14,15 +14,15 @@ module.exports = function(deployer, network) {
     } else if (network == "rinkeby") {
         // Rinkeby network
         preSaleStart = new Date("January 5, 2018 03:00:00 GMT");
-        preSaleEnd = new Date("January 7, 2018 04:00:00 GMT");
-        saleStart = new Date("January 9, 2018 17:46:40 GMT");
-        saleEnd = new Date("January 11, 2018 07:33:20 GMT");
+        preSaleEnd = new Date("January 7, 2018 03:00:00 GMT");
+        saleStart = new Date("January 9, 2018 03:00:00 GMT");
+        saleEnd = new Date("January 11, 2018 03:00:00 GMT");
 
-        etherWallet = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";
-        teamWallet = "0x1f1481E24FCCf09E4710a081988D86019436b6fB";
-        advisorWallet = "0x33eEE0d32810171106656B96b490bA935792219e";
-        bountyWallet = "0x091F32312b91c51AD01a1eE27E4F5B6c8002aC74";
-        fundWallet = "0x2932b7a2355d6fecc4b5c0b6bd44cc31df247a2e";
+        etherWallet = "0x3fCF658B6D4B022Fde0Dc2428B02cE83929a96Ef";
+        teamWallet = "0xc172538611d3801F833D0D24C9874d0a6A2d0381";
+        advisorWallet = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";
+        bountyWallet = "0x1f1481E24FCCf09E4710a081988D86019436b6fB";
+        fundWallet = "0x33eEE0d32810171106656B96b490bA935792219e";
 
     } else {
         // Development network

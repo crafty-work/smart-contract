@@ -97,6 +97,7 @@ contract CraftyCrowdsale is Pausable {
      * @param _rate The exchange rate of tokens.
      */
     function CraftyCrowdsale(address _token, uint256 _preSaleStart, uint256 _preSaleEnd, uint256 _saleStart, uint256 _saleEnd, uint256 _rate) public {
+        require(_token != address(0));
         require(_preSaleStart < _preSaleEnd && _preSaleEnd < _saleStart && _saleStart < _saleEnd);
         require(_rate > 0);
 
@@ -120,7 +121,7 @@ contract CraftyCrowdsale is Pausable {
      * @dev Function used to buy tokens
      */
     function buyTokens() public saleIsOn whenNotPaused payable {
-        require(msg.sender != 0x0);
+        require(msg.sender != address(0));
         require(msg.value >= 20 finney);
 
         uint256 weiAmount = msg.value;
@@ -158,11 +159,11 @@ contract CraftyCrowdsale is Pausable {
      * @param _fundWallet Address of fund wallet.
      */
     function setWallets(address _etherWallet, address _teamWallet, address _advisorWallet, address _bountyWallet, address _fundWallet) public onlyOwner inState(State.BEFORE_START) {
-        require(_etherWallet != 0x0);
-        require(_teamWallet != 0x0);
-        require(_advisorWallet != 0x0);
-        require(_bountyWallet != 0x0);
-        require(_fundWallet != 0x0);
+        require(_etherWallet != address(0));
+        require(_teamWallet != address(0));
+        require(_advisorWallet != address(0));
+        require(_bountyWallet != address(0));
+        require(_fundWallet != address(0));
 
         etherWallet = _etherWallet;
         teamWallet = _teamWallet;
@@ -195,7 +196,7 @@ contract CraftyCrowdsale is Pausable {
      * @param newTokens Amount of tokens to be minted.
      */
     function generateTokens(address beneficiary, uint256 newTokens) public onlyOwner saleIsOn whenNotPaused {
-        require(beneficiary != 0x0);
+        require(beneficiary != address(0));
         require(newTokens > 0);
         require(issuedTokens.add(newTokens) <= hardCap);
 
