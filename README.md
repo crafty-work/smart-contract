@@ -12,4 +12,4 @@ Crafty Smart Contracts:
 
 Zeppelin Solidity: 
 [[Repository]](https://github.com/OpenZeppelin/zeppelin-solidity)
-[[MIT License]](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/LICENSE-3RD-PARTY)
+[[MIT License]](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/LICENSE)
