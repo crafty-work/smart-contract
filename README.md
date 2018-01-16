@@ -6,10 +6,10 @@ With almost two years of experience in the Brazilian market, > 50,000 downloads 
 
 ## License
 
-Crafty Smart Contracts 
-[MIT License](https://github.com/crafty-work/smart-contract/blob/master/LICENSE)
+Crafty Smart Contracts: 
+[[MIT License](https://github.com/crafty-work/smart-contract/blob/master/LICENSE)
 
 
-Zeppelin Solidity 
-[Repository](https://github.com/OpenZeppelin/zeppelin-solidity)
-[MIT License](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/LICENSE-3RD-PARTY)
+Zeppelin Solidity: 
+[[Repository](https://github.com/OpenZeppelin/zeppelin-solidity)
+[[MIT License](https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/LICENSE-3RD-PARTY)
