@@ -23,6 +23,14 @@ module.exports = {
 	      network_id: 4,
 	      gas: 4612388, // Gas limit used for deploys
 	      gasPrice: 2000000000
+	    },
+	    live: {
+	      host: "localhost", // Connect to geth on the specified
+	      port: 8545,
+	      from: "0x84d7548c6999cA8fE834Aa4Fe2CdCF3f58626C92", // default address to use for any transaction Truffle makes during migrations
+	      network_id: 1,
+	      gas: 4612388, // Gas limit used for deploys
+	      gasPrice: 6000000000 // 1000000000 = 1 GWEI
 	    }
     }
 };

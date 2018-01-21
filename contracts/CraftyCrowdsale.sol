@@ -50,7 +50,6 @@ contract CraftyCrowdsale is Pausable {
 
     // timelocked tokens
     TokenTimelock teamTokens;
-    TokenTimelock advisorTokens;
 
     uint256 public rate;
 
@@ -64,6 +63,13 @@ contract CraftyCrowdsale is Pausable {
      * @param amount amount of tokens purchased
      */
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 amount);
+
+    /**
+     * @dev Event for refund
+     * @param to who sent wei
+     * @param amount amount of wei refunded
+     */
+    event Refund(address indexed to, uint256 amount);
 
     /**
      * @dev modifier to allow token creation only when the sale is on
@@ -185,10 +191,9 @@ contract CraftyCrowdsale is Pausable {
         // Mint locked tokens
         teamTokens = new TokenTimelock(token, teamWallet, releaseTime);
         token.mint(teamTokens, teamCap);
-        advisorTokens = new TokenTimelock(token, advisorWallet, releaseTime);
-        token.mint(advisorTokens, advisorCap);
 
         // Mint released tokens
+        token.mint(advisorWallet, advisorCap);
         token.mint(bountyWallet, bountyCap);
         token.mint(fundWallet, fundCap);
 
@@ -200,7 +205,7 @@ contract CraftyCrowdsale is Pausable {
      * @param beneficiary Address of the beneficiary.
      * @param newTokens Amount of tokens to be minted.
      */
-    function generateTokens(address beneficiary, uint256 newTokens) public onlyOwner saleIsOn whenNotPaused {
+    function generateTokens(address beneficiary, uint256 newTokens) public onlyOwner {
         require(beneficiary != address(0));
         require(newTokens > 0);
         require(issuedTokens.add(newTokens) <= hardCap);
@@ -248,6 +253,7 @@ contract CraftyCrowdsale is Pausable {
         uint256 amount = received[msg.sender];
         received[msg.sender] = 0;
         msg.sender.transfer(amount);
+        Refund(msg.sender, amount);
     }
 
     /**
@@ -255,13 +261,6 @@ contract CraftyCrowdsale is Pausable {
      */
     function releaseTeamTokens() public {
         teamTokens.release();
-    }
-
-    /**
-     * @dev Function used to release token of advisor wallet.
-     */
-    function releaseAdvisorTokens() public {
-        advisorTokens.release();
     }
 
     /**
@@ -278,22 +277,22 @@ contract CraftyCrowdsale is Pausable {
      */
     function getRate(uint256 amount) internal view returns (uint256) {
         if(now < preSaleEnd) {
-            require(amount >= 12500 finney);
+            require(amount >= 6797 finney);
 
-            if(amount <= 15000 finney)
+            if(amount <= 8156 finney)
                 return rate.mul(105).div(100);
-            if(amount <= 17500 finney)
+            if(amount <= 9515 finney)
                 return rate.mul(1055).div(1000);
-            if(amount <= 20000 finney)
+            if(amount <= 10874 finney)
                 return rate.mul(1065).div(1000);
-            if(amount <= 22500 finney)
+            if(amount <= 12234 finney)
                 return rate.mul(108).div(100);
-            if(amount <= 25000 finney)
+            if(amount <= 13593 finney)
                 return rate.mul(110).div(100);
-            if(amount <= 50000 finney)
+            if(amount <= 27185 finney)
                 return rate.mul(113).div(100);
-            if(amount > 50000 finney)
-            return rate.mul(120).div(100);
+            if(amount > 27185 finney)
+                return rate.mul(120).div(100);
         }
 
         return rate;

@@ -10,8 +10,8 @@ import "./token/PausableToken.sol";
  * @dev CraftyToken is a token contract of Crafty.
  */
 contract CraftyToken is MintableToken, PausableToken {
-    string public constant name = 'Test Crafty Token';
-    string public constant symbol = 'TCFTY';
+    string public constant name = 'Crafty Token';
+    string public constant symbol = 'CFTY';
     uint8 public constant decimals = 8;
 
     /**
