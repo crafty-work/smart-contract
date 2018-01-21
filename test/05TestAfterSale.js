@@ -50,7 +50,7 @@ contract('CraftyCrowdsale', function(accounts) {
         });
     });
 
-    it("Should test generate tokens before pre-sale", function() {
+    it("Should test generate tokens after sale", function() {
         let amount = 54321;
         let initialBalance;
         let finalBalance;
@@ -58,11 +58,10 @@ contract('CraftyCrowdsale', function(accounts) {
         return token.balanceOf(constants.account4).then(function(balance) {
             initialBalance = parseInt(balance.valueOf());
             return ico.generateTokens(constants.account4, amount);
-        }).catch(function(e) {
-            // Should throw exception
+        }).then(function(tx) {
             return token.balanceOf(constants.account4);
         }).then(function(balance) {
-            finalBalance = initialBalance + 0;
+            finalBalance = initialBalance + amount;
             assert.equal(balance.valueOf(), finalBalance, "Balance should be "+finalBalance);
         });
     });
@@ -89,6 +88,23 @@ contract('CraftyCrowdsale', function(accounts) {
 
     it("Should test enable refund after finish crowdsale", function() {
         return ico.enableRefund();
+    });
+
+    it("Should test generate tokens after finish crowdsale", function() {
+        let amount = 54321;
+        let initialBalance;
+        let finalBalance;
+
+        return token.balanceOf(constants.account4).then(function(balance) {
+            initialBalance = parseInt(balance.valueOf());
+            return ico.generateTokens(constants.account4, amount);
+        }).catch(function(e) {
+            // Should throw exception
+            return token.balanceOf(constants.account4);
+        }).then(function(balance) {
+            finalBalance = initialBalance + 0;
+            assert.equal(balance.valueOf(), finalBalance, "Balance should be "+finalBalance);
+        });
     });
     
 });

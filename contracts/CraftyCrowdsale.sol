@@ -30,7 +30,16 @@ contract CraftyCrowdsale is Pausable {
     uint256 public issuedTokens = 0;
 
     // token cap
-    uint256 public hardCap = 5000000000 * 10**8;
+    uint256 public constant hardCap = 5000000000 * 10**8; // 50%
+
+    // token wallets
+    uint256 constant teamCap = 1450000000 * 10**8; // 14.5%
+    uint256 constant advisorCap = 450000000 * 10**8; // 4.5%
+    uint256 constant bountyCap = 100000000 * 10**8; // 1%
+    uint256 constant fundCap = 3000000000 * 10**8; // 30%
+
+    // Number of days the tokens will be locked
+    uint256 constant lockTime = 180 days;
 
     // wallets
     address public etherWallet;
@@ -41,7 +50,6 @@ contract CraftyCrowdsale is Pausable {
 
     // timelocked tokens
     TokenTimelock teamTokens;
-    TokenTimelock advisorTokens;
 
     uint256 public rate;
 
@@ -55,6 +63,13 @@ contract CraftyCrowdsale is Pausable {
      * @param amount amount of tokens purchased
      */
     event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 amount);
+
+    /**
+     * @dev Event for refund
+     * @param to who sent wei
+     * @param amount amount of wei refunded
+     */
+    event Refund(address indexed to, uint256 amount);
 
     /**
      * @dev modifier to allow token creation only when the sale is on
@@ -97,6 +112,7 @@ contract CraftyCrowdsale is Pausable {
      * @param _rate The exchange rate of tokens.
      */
     function CraftyCrowdsale(address _token, uint256 _preSaleStart, uint256 _preSaleEnd, uint256 _saleStart, uint256 _saleEnd, uint256 _rate) public {
+        require(_token != address(0));
         require(_preSaleStart < _preSaleEnd && _preSaleEnd < _saleStart && _saleStart < _saleEnd);
         require(_rate > 0);
 
@@ -120,7 +136,7 @@ contract CraftyCrowdsale is Pausable {
      * @dev Function used to buy tokens
      */
     function buyTokens() public saleIsOn whenNotPaused payable {
-        require(msg.sender != 0x0);
+        require(msg.sender != address(0));
         require(msg.value >= 20 finney);
 
         uint256 weiAmount = msg.value;
@@ -158,11 +174,11 @@ contract CraftyCrowdsale is Pausable {
      * @param _fundWallet Address of fund wallet.
      */
     function setWallets(address _etherWallet, address _teamWallet, address _advisorWallet, address _bountyWallet, address _fundWallet) public onlyOwner inState(State.BEFORE_START) {
-        require(_etherWallet != 0x0);
-        require(_teamWallet != 0x0);
-        require(_advisorWallet != 0x0);
-        require(_bountyWallet != 0x0);
-        require(_fundWallet != 0x0);
+        require(_etherWallet != address(0));
+        require(_teamWallet != address(0));
+        require(_advisorWallet != address(0));
+        require(_bountyWallet != address(0));
+        require(_fundWallet != address(0));
 
         etherWallet = _etherWallet;
         teamWallet = _teamWallet;
@@ -170,21 +186,16 @@ contract CraftyCrowdsale is Pausable {
         bountyWallet = _bountyWallet;
         fundWallet = _fundWallet;
 
-        uint256 releaseTime = saleEnd + 180 days;
+        uint256 releaseTime = saleEnd + lockTime;
 
         // Mint locked tokens
-        // 14.5% to team
         teamTokens = new TokenTimelock(token, teamWallet, releaseTime);
-        token.mint(teamTokens, 1450000000 * 10**8);
-        // 4.5% to advisors
-        advisorTokens = new TokenTimelock(token, advisorWallet, releaseTime);
-        token.mint(advisorTokens, 450000000 * 10**8);
+        token.mint(teamTokens, teamCap);
 
         // Mint released tokens
-        // 1% to bounty
-        token.mint(bountyWallet, 100000000 * 10**8);
-        // 30% to fund
-        token.mint(fundWallet, 3000000000 * 10**8);
+        token.mint(advisorWallet, advisorCap);
+        token.mint(bountyWallet, bountyCap);
+        token.mint(fundWallet, fundCap);
 
         currentState = State.SALE;
     }
@@ -194,8 +205,8 @@ contract CraftyCrowdsale is Pausable {
      * @param beneficiary Address of the beneficiary.
      * @param newTokens Amount of tokens to be minted.
      */
-    function generateTokens(address beneficiary, uint256 newTokens) public onlyOwner saleIsOn whenNotPaused {
-        require(beneficiary != 0x0);
+    function generateTokens(address beneficiary, uint256 newTokens) public onlyOwner {
+        require(beneficiary != address(0));
         require(newTokens > 0);
         require(issuedTokens.add(newTokens) <= hardCap);
 
@@ -229,7 +240,7 @@ contract CraftyCrowdsale is Pausable {
      * @dev Check the amount of wei received by beneficiary.
      * @param beneficiary Address of beneficiary.
      */
-    function receivedFrom(address beneficiary) public constant returns (uint256) {
+    function receivedFrom(address beneficiary) public view returns (uint256) {
         return received[beneficiary];
     }
 
@@ -242,6 +253,7 @@ contract CraftyCrowdsale is Pausable {
         uint256 amount = received[msg.sender];
         received[msg.sender] = 0;
         msg.sender.transfer(amount);
+        Refund(msg.sender, amount);
     }
 
     /**
@@ -249,13 +261,6 @@ contract CraftyCrowdsale is Pausable {
      */
     function releaseTeamTokens() public {
         teamTokens.release();
-    }
-
-    /**
-     * @dev Function used to release token of advisor wallet.
-     */
-    function releaseAdvisorTokens() public {
-        advisorTokens.release();
     }
 
     /**
@@ -270,24 +275,24 @@ contract CraftyCrowdsale is Pausable {
      * @param amount Amount received.
      * @return An uint256 representing the exchange rate.
      */
-    function getRate(uint256 amount) internal constant returns (uint256) {
+    function getRate(uint256 amount) internal view returns (uint256) {
         if(now < preSaleEnd) {
-            require(amount >= 12500 finney);
+            require(amount >= 6797 finney);
 
-            if(amount <= 15000 finney)
+            if(amount <= 8156 finney)
                 return rate.mul(105).div(100);
-            if(amount <= 17500 finney)
+            if(amount <= 9515 finney)
                 return rate.mul(1055).div(1000);
-            if(amount <= 20000 finney)
+            if(amount <= 10874 finney)
                 return rate.mul(1065).div(1000);
-            if(amount <= 22500 finney)
+            if(amount <= 12234 finney)
                 return rate.mul(108).div(100);
-            if(amount <= 25000 finney)
+            if(amount <= 13593 finney)
                 return rate.mul(110).div(100);
-            if(amount <= 50000 finney)
+            if(amount <= 27185 finney)
                 return rate.mul(113).div(100);
-            if(amount > 50000 finney)
-            return rate.mul(120).div(100);
+            if(amount > 27185 finney)
+                return rate.mul(120).div(100);
         }
 
         return rate;

@@ -84,11 +84,10 @@ contract('CraftyCrowdsale', function(accounts) {
         return token.balanceOf(constants.account4).then(function(balance) {
             initialBalance = parseInt(balance.valueOf());
             return ico.generateTokens(constants.account4, amount);
-        }).catch(function(e) {
-            // Should throw exception
+        }).then(function(tx) {
             return token.balanceOf(constants.account4);
         }).then(function(balance) {
-            finalBalance = initialBalance + 0;
+            finalBalance = initialBalance + amount;
             assert.equal(balance.valueOf(), finalBalance, "Balance should be "+finalBalance);
         });
     });
